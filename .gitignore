@@ -1,0 +1,16 @@
+# Mac OS
+.DS_Store
+
+# Java compiled files
+*.class
+*.jar
+
+# Maven build output
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
