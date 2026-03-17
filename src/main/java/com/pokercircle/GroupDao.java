@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 
 public class GroupDao implements Dao<Integer, Group> {
 
@@ -51,7 +50,7 @@ public class GroupDao implements Dao<Integer, Group> {
 
             Group group = null;
             if (rs.next()) {
-                return new Group(
+                group = new Group(
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getInt("created_by"),
