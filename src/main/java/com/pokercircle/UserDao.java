@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import com.pokercircle.DaoException;
 
 
 //Data CRUD: create, read, update, delete
