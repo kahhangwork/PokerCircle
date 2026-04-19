@@ -1,5 +1,8 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 import javax.sql.DataSource;
+
+import com.pokercircle.domain.GroupSessionTxn;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -122,7 +125,39 @@ public class GroupSessionTxnDao implements Dao<Long, GroupSessionTxn> {
         return txns;
     }
 
+    public List<GroupSessionTxn> readBySession(Integer sessionId) throws DaoException {
+        List<GroupSessionTxn> txns = new ArrayList<>();
+        String query = """
+                SELECT *
+                FROM grp_session_txn
+                WHERE session_id = ?
+                """;
 
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stat = conn.prepareStatement(query)) {
+            stat.setInt(1, sessionId);
+            ResultSet rs = stat.executeQuery();
+
+            while (rs.next()) {
+                Integer fromMemberId = (Integer) rs.getObject("from_member_id");
+                Integer toMemberId = (Integer) rs.getObject("to_member_id");
+                GroupSessionTxn txn = new GroupSessionTxn(
+                    rs.getLong("id"),
+                    rs.getInt("session_id"),
+                    fromMemberId,
+                    toMemberId,
+                    rs.getString("txn_type"),
+                    rs.getInt("amount_cents"),
+                    rs.getTimestamp("txn_at").toLocalDateTime(),
+                    rs.getString("notes")
+                );
+                txns.add(txn);
+            }
+        } catch (SQLException ex) {
+                throw new DaoException("Error reading this particular session transactions", ex);
+            }
+        return txns;
+    }
 
     @Override
     public int update(GroupSessionTxn txn) throws DaoException {

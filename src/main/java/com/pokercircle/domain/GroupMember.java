@@ -1,4 +1,4 @@
-package com.pokercircle;
+package com.pokercircle.domain;
 import java.time.LocalDateTime;
 
 // DOMAIN OBJECT

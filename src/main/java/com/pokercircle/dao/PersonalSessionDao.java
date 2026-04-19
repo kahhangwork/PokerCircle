@@ -1,5 +1,8 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 import javax.sql.DataSource;
+
+import com.pokercircle.domain.PersonalSession;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -129,6 +132,38 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
         return sessions;
     }
 
+
+    public List<PersonalSession> readByUser(Integer userId) throws DaoException {
+        List<PersonalSession> sessions = new ArrayList<>();
+        String query = "SELECT * FROM personal_session WHERE usr_id = ?";
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stat = conn.prepareStatement(query)) {
+            stat.setInt(1, userId);
+            ResultSet rs = stat.executeQuery();
+
+            while (rs.next()) {
+                Timestamp endedAt = rs.getTimestamp("session_ended_at");
+                sessions.add(new PersonalSession(
+                    rs.getInt("session_id"),
+                    rs.getInt("usr_id"),
+                    rs.getString("session_type"),
+                    rs.getString("session_stakes"),
+                    rs.getString("session_location"),
+                    rs.getTimestamp("session_started_at").toLocalDateTime(),
+                    endedAt != null ? endedAt.toLocalDateTime() : null,
+                    rs.getInt("buy_in_cents"),
+                    rs.getInt("cash_out_cents"),
+                    rs.getString("notes"),
+                    rs.getTimestamp("created_at").toLocalDateTime(),
+                    rs.getTimestamp("updated_at").toLocalDateTime()
+                ));
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("Error reading sessions for user ID: " + userId, ex);
+        }
+        return sessions;
+    }
 
 
     @Override

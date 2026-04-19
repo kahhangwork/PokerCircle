@@ -1,5 +1,6 @@
-package com.pokercircle;
+package com.pokercircle.domain;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public class Group {
@@ -9,6 +10,8 @@ public class Group {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private List<User> members; // groups can have multiple users, and users can belong to multiple groups (many-to-many relationship)
 
 
     // METHODS

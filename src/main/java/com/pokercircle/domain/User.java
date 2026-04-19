@@ -1,5 +1,6 @@
-package com.pokercircle;
+package com.pokercircle.domain;
 import java.time.LocalDateTime;
+import java.util.List;
 
 //DOMAIN OBJECT
 public class User {
@@ -11,6 +12,8 @@ public class User {
     private String passwordHash;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private List<Group> groups; // users can belong to multiple groups, and groups can have multiple users (many-to-many relationship)
 
     //METHODS
 
@@ -80,6 +83,14 @@ public class User {
     }
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void invite(User user) {
+        // To Do: Implement invite logic (e.g., create a pending GroupMember entry, send notification, etc.)
+    }
+
+    public void joinGroup(Group group) {
+        // To Do: Implement join group logic (e.g., create a GroupMember entry, etc.)
     }
 
 

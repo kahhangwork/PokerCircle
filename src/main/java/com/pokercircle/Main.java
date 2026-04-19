@@ -1,19 +1,14 @@
 package com.pokercircle;
 
-import java.time.LocalDateTime;
-import java.util.Properties;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javax.sql.DataSource;
-import com.mysql.cj.jdbc.MysqlDataSource;
+import com.pokercircle.domain.User;
+import com.pokercircle.domain.Group;
+import com.pokercircle.service.UserService;
+import com.pokercircle.service.GroupService;
 
 public class Main {
     public static void main(String[] args) {
-        User user = new User("bob@example.com", "Bob Dylan", "mypass");
-        User user3 = new User("john@example.com", "John Collins", "mypass");
+
+        // User user3 = new User("jim@example.com", "Jim Smith", "mypass");
         // User user2 = new User();
         // User user3 = new User(2, "alice@example.com", "Alice"); 
         
@@ -26,14 +21,35 @@ public class Main {
 
         // DataSourceFactory factory = DataSourceFactory.instance();
         // factory.getDataSource();
-        UserDao userDao = new UserDao();
-        try {
-            // int id = userDao.create(user3);
-            // User user2 = userDao.read(8);
-            // userDao.delete(8);
-            System.out.println(userDao.readAll().size());
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }       
+        // UserDao userDao = new UserDao();
+        // try {
+        //     userDao.delete(7);
+        //     System.out.println(userDao.readAll().size());
+        // } catch (DaoException ex) {
+        //     ex.printStackTrace();
+        // }       
+
+        UserService userService = new UserService();
+        // userService.createUser(user3);
+        // userService.getAllUsers().forEach(System.out::println);
+
+        User user = userService.getUser(1);
+        // GroupService grpService = new GroupService();
+        // Group group = new Group ("user", user.getId(), "User Group");
+        // grpService.createGroup(group);
+        // user.setPasswordHash("mypass");
+        // userService.updateUser(user);
+        // userService.deleteUser(11);
+
+        GroupService grpService = new GroupService();
+        Group group = new Group ("user")
+
+
+
     }
+
+
+
 }
+
+

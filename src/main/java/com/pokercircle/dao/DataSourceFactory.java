@@ -1,11 +1,9 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 
-import java.time.LocalDateTime;
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
@@ -35,13 +33,13 @@ public class DataSourceFactory {
         ds.setPassword(props.getProperty("password"));
 
 
-        try {
-            Connection conn = ds.getConnection();
-            System.out.println("DB Connection Successful");
-        } catch (SQLException ex) {
-            System.out.println("DB Connection Failed");
-            ex.printStackTrace();
-        }
-        return ds;
+    try (Connection conn = ds.getConnection()) {
+        System.out.println("DB Connection Successful");
+    } catch (SQLException ex) {
+        System.out.println("DB Connection Failed");
+        ex.printStackTrace();
+    }
+       
+    return ds;
     }
 }

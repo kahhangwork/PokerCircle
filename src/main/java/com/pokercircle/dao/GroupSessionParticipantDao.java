@@ -1,5 +1,9 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 import javax.sql.DataSource;
+
+import com.pokercircle.domain.GroupSessionParticipant;
+import com.pokercircle.domain.GroupSessionParticipantKey;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;

@@ -1,4 +1,4 @@
-package com.pokercircle;
+package com.pokercircle.domain;
 
 // Composite key for grp_session_participant, which has no single auto-increment id.
 // This class holds both parts of the primary key: (session_id, member_id).

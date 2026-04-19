@@ -1,4 +1,4 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 import java.util.List;
 
 // Generic Data Access Object (DAO) interface for CRUD operations

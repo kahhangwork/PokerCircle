@@ -1,4 +1,4 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 
 public class DaoException extends Exception {
     public DaoException(String errMsg, Exception ex) {

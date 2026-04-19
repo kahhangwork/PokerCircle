@@ -1,5 +1,8 @@
-package com.pokercircle;
+package com.pokercircle.dao;
 import javax.sql.DataSource;
+
+import com.pokercircle.domain.GroupSession;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -151,6 +154,43 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
         } catch (SQLException ex) {
             throw new DaoException("Error updating group session with ID: " + session.getId(), ex);
         }
+    }
+
+
+    public List<GroupSession> readByGroup(Integer groupId) throws DaoException {
+        List<GroupSession> sessions = new ArrayList<>();
+        String query = """
+            SELECT id, grp_id, session_type, session_stakes, session_location,
+                   session_started_at, session_ended_at, notes, created_at, updated_at
+            FROM grp_session
+            WHERE grp_id = ?
+            """;
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stat = conn.prepareStatement(query)) {
+            stat.setInt(1, groupId);
+            ResultSet rs = stat.executeQuery();
+
+            while (rs.next()) {
+                Timestamp endedAt = rs.getTimestamp("session_ended_at");
+                sessions.add(new GroupSession(
+                    rs.getInt("id"),
+                    rs.getInt("grp_id"),
+                    rs.getString("session_type"),
+                    rs.getString("session_stakes"),
+                    rs.getString("session_location"),
+                    rs.getTimestamp("session_started_at").toLocalDateTime(),
+                    endedAt != null ? endedAt.toLocalDateTime() : null,
+                    rs.getString("notes"),
+                    rs.getTimestamp("created_at").toLocalDateTime(),
+                    rs.getTimestamp("updated_at").toLocalDateTime()
+                ));
+            }
+
+        } catch (SQLException ex) {
+            throw new DaoException("Error reading group sessions for group ID: " + groupId, ex);
+        }
+        return sessions;
     }
 
 
