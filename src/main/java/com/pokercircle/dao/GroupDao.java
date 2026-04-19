@@ -21,13 +21,14 @@ public class GroupDao implements Dao<Integer, Group> {
     
     @Override
     public Group create(Group group) throws DaoException {
-        String query = "INSERT INTO grp(name, created_by, description) VALUES(?, ?, ?)";
+        String query = "INSERT INTO grp(name, created_by, description, private_code) VALUES(?, ?, ?, ?)";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setString(1, group.getName());
             stat.setInt(2, group.getCreatedBy());
             stat.setString(3, group.getDescription());
+            stat.setString(4, group.getPrivateCode());
             stat.executeUpdate();
             ResultSet generatedKeys = stat.getGeneratedKeys();
             if (generatedKeys.next())
@@ -41,7 +42,7 @@ public class GroupDao implements Dao<Integer, Group> {
     @Override
     public Group read(Integer id) throws DaoException {
         String query = """
-            SELECT id, name, description, created_by, created_at, updated_at
+            SELECT id, name, description, private_code, created_by, created_at, updated_at
             FROM grp
             WHERE id = ?  
                 """;
@@ -58,6 +59,7 @@ public class GroupDao implements Dao<Integer, Group> {
                     rs.getString("name"),
                     rs.getInt("created_by"),
                     rs.getString("description"),
+                    rs.getString("private_code"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getTimestamp("updated_at").toLocalDateTime()
                 );
@@ -71,7 +73,7 @@ public class GroupDao implements Dao<Integer, Group> {
     @Override
     public List<Group> readAll() throws DaoException {
         String query = """
-            SELECT id, name, description, created_by, created_at, updated_at
+            SELECT id, name, description, private_code, created_by, created_at, updated_at
             FROM grp
                 """;
         List<Group> groups = new ArrayList<>();
@@ -85,6 +87,7 @@ public class GroupDao implements Dao<Integer, Group> {
                     rs.getString("name"),
                     rs.getInt("created_by"),
                     rs.getString("description"),
+                    rs.getString("private_code"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getTimestamp("updated_at").toLocalDateTime()
                 ));
@@ -97,13 +100,14 @@ public class GroupDao implements Dao<Integer, Group> {
 
     @Override
     public int update(Group group) throws DaoException {
-        String query = "UPDATE grp SET name = ?, description = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
+        String query = "UPDATE grp SET name = ?, description = ?, private_code = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setString(1, group.getName());
             stat.setString(2, group.getDescription());
-            stat.setInt(3, group.getId());
+            stat.setString(3, group.getPrivateCode());
+            stat.setInt(4, group.getId());
 
             return stat.executeUpdate();
 

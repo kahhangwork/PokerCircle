@@ -7,10 +7,12 @@ import com.pokercircle.domain.GroupSession;
 
 public class GroupSessionService {
     private GroupSessionDao groupSessionDao;
+    private GroupSessionTxnService groupSessionTxnService;
 
     // CONSTRUCTORS
     public GroupSessionService() {
         this.groupSessionDao = new GroupSessionDao();
+        this.groupSessionTxnService = new GroupSessionTxnService();
     }
     
     // CRUD Services
@@ -66,5 +68,16 @@ public class GroupSessionService {
             ex.printStackTrace();
         }
         return false;
+    }
+
+
+    // Logic Services
+    public boolean validateSession(Integer sessionId) {
+        int netTotal = groupSessionTxnService.getNetTotal(sessionId);
+        if (netTotal != 0) {
+            System.out.println("Validation failed: session does not sum to zero. Net total: " + netTotal);
+            return false;
+        }
+        return true;
     }
 }

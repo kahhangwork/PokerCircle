@@ -10,6 +10,7 @@ public class Group {
     private String description;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String privateCode; // code that users can use join the group
 
     private List<User> members; // groups can have multiple users, and users can belong to multiple groups (many-to-many relationship)
 
@@ -21,16 +22,17 @@ public class Group {
     public Group() {}
 
     //constructor chaining - for when you want to create a new group and don't have an id or timestamps yet. The DB will handle those for us, so we can set them to default values here.
-    public Group(String name, int createdBy, String description) {
-        this(0, name, createdBy, description, LocalDateTime.now(), LocalDateTime.now());
+    public Group(String name, int createdBy, String description, String privateCode) {
+        this(0, name, createdBy, description, privateCode, null, LocalDateTime.now(), LocalDateTime.now());
     }
 
     //overload constructor - for when you want to create a new group with all values specified. This is useful for when you're reading a group from the database and want to create a Group object with all the values from the DB, including the id and timestamps.
-    public Group(int id, String name, int createdBy, String description, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Group(int id, String name, int createdBy, String description, String privateCode, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.createdBy = createdBy;
         this.description = description;
+        this.privateCode = privateCode;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -47,6 +49,9 @@ public class Group {
     }
     public String getDescription() {
         return this.description;
+    }
+    public String getPrivateCode() {
+        return this.privateCode;
     }
     public LocalDateTime getCreatedAt() {
         return this.createdAt;
@@ -68,6 +73,9 @@ public class Group {
     public void setDescription(String description) {
         this.description = description;
     }
+    public void setPrivateCode(String privateCode) {
+        this.privateCode = privateCode;
+    }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -83,6 +91,7 @@ public class Group {
                 ", name='" + name + '\'' +
                 ", createdBy=" + createdBy +
                 ", description='" + description + '\'' +
+                ", privateCode='" + privateCode + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';    

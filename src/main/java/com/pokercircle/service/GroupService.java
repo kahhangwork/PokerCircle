@@ -2,6 +2,7 @@ package com.pokercircle.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.HashMap;
 import com.pokercircle.domain.Group;
 import com.pokercircle.dao.GroupDao;
@@ -31,7 +32,15 @@ public class GroupService {
     // CRUD Services
     public Group createGroup(Group group) {
         try {
-            return groupDao.create(group);
+            group.setPrivateCode("POKER-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase());
+            groupDao.create(group);
+
+            // automatically add the creator as member of group with role "ADMIN"
+            GroupMember creator = new GroupMember(group.getId(), group.getCreatedBy());
+            creator.setRole("ADMIN");
+            groupMemberDao.create(creator);
+
+            return group;
         } catch (DaoException ex) {
             ex.printStackTrace();
         }
@@ -67,10 +76,19 @@ public class GroupService {
     }
 
 
+    public boolean isAdmin(int userId, int groupId) {
+        try {
+            GroupMember member = groupMemberDao.readByGroupAndUser(groupId, userId);
+            return member != null && "ADMIN".equals(member.getRole());
+        } catch (DaoException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     // assign members to group
     public GroupMember assignMemberToGroup(int requestingUserId, Group group, int newUserId) {
-        // only group admin (created_by) can assign members to group
-        if (requestingUserId != group.getCreatedBy()) {
+        if (!isAdmin(requestingUserId, group.getId())) {
             System.out.println("Only group admin can assign members to a group.");
             return null;
         }

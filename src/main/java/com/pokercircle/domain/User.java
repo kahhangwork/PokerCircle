@@ -12,6 +12,7 @@ public class User {
     private String passwordHash;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String privacySetting;
 
     private List<Group> groups; // users can belong to multiple groups, and groups can have multiple users (many-to-many relationship)
 
@@ -27,12 +28,13 @@ public class User {
     }
 
     //overload constructor
-    public User (int id, String email, String displayName, String profilePicture, String passwordHash, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User (int id, String email, String displayName, String profilePicture, String passwordHash, String privacySetting,LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.email = email;
         this.displayName = displayName;
         this.profilePicture = profilePicture;
         this.passwordHash = passwordHash;
+        this.privacySetting = privacySetting;
         this.createdAt = createdAt; 
         this.updatedAt = updatedAt;
     }
@@ -60,7 +62,9 @@ public class User {
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
-
+    public String getPrivacySetting() {
+        return this.privacySetting;
+    }
     
     //SETTERS
     public void setId(int id) {
@@ -83,6 +87,9 @@ public class User {
     }
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    public void setPrivacySetting(String privacySetting) {
+        this.privacySetting = privacySetting;
     }
 
     public void invite(User user) {

@@ -29,13 +29,14 @@ public class UserDao implements Dao<Integer, User> {
     @Override
     public User create(User user) throws DaoException {
         // DB already handles timestamps, so we don't need to set them here
-        String query = "INSERT INTO usr(email, display_name, password_hash) VALUES(?, ?, ?)";
+        String query = "INSERT INTO usr(email, display_name, password_hash, privacy_setting) VALUES(?, ?, ?, ?)";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setString(1, user.getEmail());
             stat.setString(2, user.getDisplayName());
             stat.setString(3, user.getPasswordHash());
+            stat.setString(4, user.getPrivacySetting());
             stat.executeUpdate();
 
             ResultSet generatedKeys = stat.getGeneratedKeys();
@@ -54,7 +55,7 @@ public class UserDao implements Dao<Integer, User> {
     @Override
     public User read (Integer id) throws DaoException {
         String query = """
-            SELECT usr_id, email, display_name, profile_picture, password_hash, created_at, updated_at
+            SELECT usr_id, email, display_name, profile_picture, password_hash, privacy_setting, created_at, updated_at
             FROM usr
             WHERE usr_id = ?
                 """;
@@ -72,6 +73,7 @@ public class UserDao implements Dao<Integer, User> {
                     rs.getString("display_name"),
                     rs.getString("profile_picture"),
                     rs.getString("password_hash"),
+                    rs.getString("privacy_setting"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getTimestamp("updated_at").toLocalDateTime()
                 );
@@ -104,6 +106,7 @@ public class UserDao implements Dao<Integer, User> {
                     rs.getString("display_name"),
                     rs.getString("profile_picture"),
                     rs.getString("password_hash"),
+                    rs.getString("privacy_setting"),
                     rs.getTimestamp("created_at").toLocalDateTime(),
                     rs.getTimestamp("updated_at").toLocalDateTime()
                 );
@@ -124,17 +127,18 @@ public class UserDao implements Dao<Integer, User> {
         // DB already handles timestamps, so we don't need to set them here
         String query = """
             UPDATE usr
-            SET email = ?, display_name = ?, profile_picture = ?, password_hash = ?, updated_at = CURRENT_TIMESTAMP
+            SET email = ?, display_name = ?, profile_picture = ?, password_hash = ?, privacy_setting = ?, updated_at = CURRENT_TIMESTAMP
             WHERE usr_id = ?
             """;
-
+        
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setString(1, user.getEmail());
             stat.setString(2, user.getDisplayName());
             stat.setString(3, user.getProfilePicture());
             stat.setString(4, user.getPasswordHash());
-            stat.setInt(5, user.getId());
+            stat.setString(5, user.getPrivacySetting());
+            stat.setInt(6, user.getId());
 
             return stat.executeUpdate();
         } catch (SQLException ex) {

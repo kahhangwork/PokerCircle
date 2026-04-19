@@ -26,12 +26,13 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
     @Override
     public GroupMember create(GroupMember member) throws DaoException {
         // DB handles joined_at via DEFAULT CURRENT_TIMESTAMP
-        String query = "INSERT INTO grp_member(grp_id, usr_id) VALUES(?, ?)";
+        String query = "INSERT INTO grp_member(grp_id, usr_id, role) VALUES(?, ?, ?)";
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setInt(1, member.getGrpId());
             stat.setInt(2, member.getUsrId());
+            stat.setString(3, member.getRole());
             stat.executeUpdate();
 
             ResultSet generatedKeys = stat.getGeneratedKeys();
@@ -50,7 +51,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
     @Override
     public GroupMember read(Integer id) throws DaoException {
         String query = """
-            SELECT id, grp_id, usr_id, joined_at, left_at
+            SELECT id, grp_id, usr_id, role, joined_at, left_at
             FROM grp_member
             WHERE id = ?
                 """;
@@ -67,6 +68,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
                     rs.getInt("usr_id"),
+                    rs.getString("role"),
                     rs.getTimestamp("joined_at").toLocalDateTime(),
                     leftAt != null ? leftAt.toLocalDateTime() : null
                 );
@@ -98,6 +100,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
                     rs.getInt("usr_id"),
+                    rs.getString("role"),
                     rs.getTimestamp("joined_at").toLocalDateTime(),
                     leftAt != null ? leftAt.toLocalDateTime() : null
                 );
@@ -117,14 +120,15 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
         // Update left_at to mark a member as having left the group
         String query = """
             UPDATE grp_member
-            SET left_at = ?
+            SET left_at = ?, role = ?
             WHERE id = ?
             """;
 
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setTimestamp(1, member.getLeftAt() != null ? Timestamp.valueOf(member.getLeftAt()) : null);
-            stat.setInt(2, member.getId());
+            stat.setString(2, member.getRole());
+            stat.setInt(3, member.getId());
 
             return stat.executeUpdate();
         } catch (SQLException ex) {
@@ -144,6 +148,36 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
             return stat.executeUpdate();
         } catch (SQLException ex) {
             throw new DaoException("Error deleting group member with ID: " + id, ex);
+        }
+    }
+
+    public GroupMember readByGroupAndUser(int groupId, int userId) throws DaoException {
+        String query = """
+            SELECT id, grp_id, usr_id, role, joined_at, left_at
+            FROM grp_member
+            WHERE grp_id = ? AND usr_id = ?
+            """;
+
+        try (Connection conn = datasource.getConnection();
+             PreparedStatement stat = conn.prepareStatement(query)) {
+            stat.setInt(1, groupId);
+            stat.setInt(2, userId);
+            ResultSet rs = stat.executeQuery();
+
+            if (rs.next()) {
+                Timestamp leftAt = rs.getTimestamp("left_at");
+                return new GroupMember(
+                    rs.getInt("id"),
+                    rs.getInt("grp_id"),
+                    rs.getInt("usr_id"),
+                    rs.getString("role"),
+                    rs.getTimestamp("joined_at").toLocalDateTime(),
+                    leftAt != null ? leftAt.toLocalDateTime() : null
+                );
+            }
+            return null;
+        } catch (SQLException ex) {
+            throw new DaoException("Error reading group member for groupId: " + groupId + " userId: " + userId, ex);
         }
     }
 }
