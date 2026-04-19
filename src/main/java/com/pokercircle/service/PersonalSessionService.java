@@ -121,7 +121,6 @@ public class PersonalSessionService {
 
         double totalHours = totalMinutes / 60.0;
 
-        }
         return (double) totalNetResult / totalHours;
     }
 

@@ -57,7 +57,7 @@ public class GroupSessionParticipantService {
         } catch (DaoException ex) {
             ex.printStackTrace();
         } 
-        return null;
+        return false;
     }
 
 }

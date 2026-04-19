@@ -10,7 +10,8 @@ import com.pokercircle.domain.GroupMember;
 import com.pokercircle.domain.GroupSessionTxn;
 import com.pokercircle.dao.GroupMemberDao;
 import com.pokercircle.dao.GroupSessionDao;
-import com.pokercircle.dao.GroupSessionTxnDa
+import com.pokercircle.dao.GroupSessionTxnDao;
+import com.pokercircle.domain.GroupSession;
 
 
 public class GroupService {

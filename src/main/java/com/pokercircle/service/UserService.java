@@ -4,6 +4,7 @@ import java.util.List;
 import com.pokercircle.dao.DaoException;
 import com.pokercircle.dao.UserDao;
 import com.pokercircle.domain.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 // To Do: Hash user paswsword 
 // To Do: Relationship between user and group
@@ -18,6 +19,7 @@ public class UserService {
 
     public User createUser(User user) {
         try {
+            user.setPasswordHash(BCrypt.hashpw(user.getPasswordHash(), BCrypt.gensalt()));
             userDao.create(user);
         } catch (DaoException ex) {
             ex.printStackTrace();
