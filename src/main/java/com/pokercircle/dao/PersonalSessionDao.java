@@ -2,6 +2,7 @@ package com.pokercircle.dao;
 import javax.sql.DataSource;
 
 import com.pokercircle.domain.PersonalSession;
+import com.pokercircle.domain.SessionType;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setInt(1, session.getUserId());
-            stat.setString(2, session.getSessionType());
+            stat.setString(2, session.getSessionType().toString());
             stat.setString(3, session.getSessionStakes());
             stat.setString(4, session.getSessionLocation());
             stat.setTimestamp(5, Timestamp.valueOf(session.getSessionStartedAt()));
@@ -74,7 +75,7 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
                 session = new PersonalSession(
                     rs.getInt("session_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),
@@ -112,7 +113,7 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
                 PersonalSession session = new PersonalSession(
                     rs.getInt("session_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),
@@ -147,7 +148,7 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
                 sessions.add(new PersonalSession(
                     rs.getInt("session_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),
@@ -180,7 +181,7 @@ public class PersonalSessionDao implements Dao<Integer, PersonalSession> {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setInt(1, session.getUserId());
-            stat.setString(2, session.getSessionType());
+            stat.setString(2, session.getSessionType().toString());
             stat.setString(3, session.getSessionStakes());
             stat.setString(4, session.getSessionLocation());
             stat.setTimestamp(5, Timestamp.valueOf(session.getSessionStartedAt()));

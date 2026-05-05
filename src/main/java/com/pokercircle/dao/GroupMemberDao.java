@@ -2,6 +2,7 @@ package com.pokercircle.dao;
 import javax.sql.DataSource;
 
 import com.pokercircle.domain.GroupMember;
+import com.pokercircle.domain.Role;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setInt(1, member.getGrpId());
             stat.setInt(2, member.getUsrId());
-            stat.setString(3, member.getRole());
+            stat.setString(3, member.getRole().toString());
             stat.executeUpdate();
 
             ResultSet generatedKeys = stat.getGeneratedKeys();
@@ -68,7 +69,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("role"),
+                    Role.valueOf(rs.getString("role").toUpperCase()),
                     rs.getTimestamp("joined_at").toLocalDateTime(),
                     leftAt != null ? leftAt.toLocalDateTime() : null
                 );
@@ -100,7 +101,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("role"),
+                    Role.valueOf(rs.getString("role").toUpperCase()),
                     rs.getTimestamp("joined_at").toLocalDateTime(),
                     leftAt != null ? leftAt.toLocalDateTime() : null
                 );
@@ -127,7 +128,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setTimestamp(1, member.getLeftAt() != null ? Timestamp.valueOf(member.getLeftAt()) : null);
-            stat.setString(2, member.getRole());
+            stat.setString(2, member.getRole().toString());
             stat.setInt(3, member.getId());
 
             return stat.executeUpdate();
@@ -170,7 +171,7 @@ public class GroupMemberDao implements Dao<Integer, GroupMember> {
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
                     rs.getInt("usr_id"),
-                    rs.getString("role"),
+                    Role.valueOf(rs.getString("role").toUpperCase()),
                     rs.getTimestamp("joined_at").toLocalDateTime(),
                     leftAt != null ? leftAt.toLocalDateTime() : null
                 );

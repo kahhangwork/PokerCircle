@@ -2,6 +2,7 @@ package com.pokercircle.dao;
 import javax.sql.DataSource;
 
 import com.pokercircle.domain.GroupSession;
+import com.pokercircle.domain.SessionType;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             stat.setInt(1, session.getGrpId());
-            stat.setString(2, session.getSessionType());
+            stat.setString(2, session.getSessionType().toString());
             stat.setString(3, session.getSessionStakes());
             stat.setString(4, session.getSessionLocation());
             stat.setTimestamp(5, Timestamp.valueOf(session.getSessionStartedAt()));
@@ -72,7 +73,7 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
                 session = new GroupSession(
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),
@@ -108,7 +109,7 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
                 GroupSession session = new GroupSession(
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),
@@ -142,7 +143,7 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
         try (Connection conn = datasource.getConnection();
              PreparedStatement stat = conn.prepareStatement(query)) {
             stat.setInt(1, session.getGrpId());
-            stat.setString(2, session.getSessionType());
+            stat.setString(2, session.getSessionType().toString());
             stat.setString(3, session.getSessionStakes());
             stat.setString(4, session.getSessionLocation());
             stat.setTimestamp(5, Timestamp.valueOf(session.getSessionStartedAt()));
@@ -176,7 +177,7 @@ public class GroupSessionDao implements Dao<Integer, GroupSession> {
                 sessions.add(new GroupSession(
                     rs.getInt("id"),
                     rs.getInt("grp_id"),
-                    rs.getString("session_type"),
+                    SessionType.valueOf(rs.getString("session_type").toUpperCase()),
                     rs.getString("session_stakes"),
                     rs.getString("session_location"),
                     rs.getTimestamp("session_started_at").toLocalDateTime(),

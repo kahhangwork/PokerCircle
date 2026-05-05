@@ -12,7 +12,7 @@ public class User {
     private String passwordHash;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String privacySetting;
+    private PrivacySetting privacySetting;
 
     private List<Group> groups; // users can belong to multiple groups, and groups can have multiple users (many-to-many relationship)
 
@@ -24,11 +24,11 @@ public class User {
 
     //constructor chaining
     public User(String email, String displayName, String passwordHash) {
-        this(0, email, displayName, "", passwordHash, LocalDateTime.now(), LocalDateTime.now());
+        this(0, email, displayName, "", passwordHash, PrivacySetting.PUBLIC, LocalDateTime.now(), LocalDateTime.now());
     }
 
     //overload constructor
-    public User (int id, String email, String displayName, String profilePicture, String passwordHash, String privacySetting,LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public User (int id, String email, String displayName, String profilePicture, String passwordHash, PrivacySetting privacySetting,LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.email = email;
         this.displayName = displayName;
@@ -62,7 +62,7 @@ public class User {
     public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
-    public String getPrivacySetting() {
+    public PrivacySetting getPrivacySetting() {
         return this.privacySetting;
     }
     
@@ -88,7 +88,7 @@ public class User {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-    public void setPrivacySetting(String privacySetting) {
+    public void setPrivacySetting(PrivacySetting privacySetting) {
         this.privacySetting = privacySetting;
     }
 
@@ -103,6 +103,6 @@ public class User {
 
     @Override
     public String toString () {
-        return "User: " + this.id + ", " + this.email + ", " + this.displayName + ", " + this.profilePicture + ", " + this.passwordHash + ", " + this.createdAt + ", " + this.updatedAt;
+        return "User: " + this.id + ", " + this.email + ", " + this.displayName + ", " + this.profilePicture + ", " + this.passwordHash + ", " + this.createdAt + ", " + this.updatedAt + ", " + this.privacySetting;
     }
 }
